@@ -97,7 +97,7 @@ namespace TransactionsSingleDocument
             var tableExist = await TableExist(dynamoDbClient, sagasTableName);
             if (tableExist == false)
             {
-                var createTableResult = await CreateTable( dynamoDbClient, sagasTableName);
+                _ = await CreateTable( dynamoDbClient, sagasTableName);
             }
 
             (bool Succeeded, int Index, string ErrorMessage)[] results = null;
