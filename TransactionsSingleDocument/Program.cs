@@ -141,8 +141,9 @@ namespace TransactionsSingleDocument
             };
             var getSagaResponse = await dynamoDbClient.GetItemAsync(getSagaRequest);
             var sagaData = getSagaResponse.Item;
+            var handledIndexes = ExtractHandledIndexes(sagaData);
             
-            Console.WriteLine($"# of indexes stored in the document:\t{sagaData[nameof(SampleSagaData.HandledIndexes)].NS.Count}");
+            Console.WriteLine($"# of indexes stored in the document:\t{handledIndexes.Count}");
             Console.WriteLine($"# of reported successful updates:\t{succeededUpdates.Count}");
             Console.WriteLine();
 
