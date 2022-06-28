@@ -147,7 +147,6 @@ namespace TransactionsSingleDocument
             Console.WriteLine($"# of reported successful updates:\t{succeededUpdates.Count}");
             Console.WriteLine();
 
-            var handledIndexes = ExtractHandledIndexes(sagaData);
             var diff = Enumerable.Range(0, numberOfConcurrentUpdates - 1)
                 .Except(failedUpdates.Select(fu => fu.Index))
                 .Except(handledIndexes)
