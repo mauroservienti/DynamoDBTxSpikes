@@ -14,7 +14,7 @@ namespace OCC
     {
         const int numberOfConcurrentUpdates = 50;
         const int maxRetryAttempts = 50;
-        const string sagasTableName = nameof(SagaData);
+        const string sagasTableName = nameof(SagaDataWithOCC);
 
         static async Task<bool> CreateTable(AmazonDynamoDBClient client, string tableName)
         {
@@ -25,12 +25,12 @@ namespace OCC
                 {
                     new AttributeDefinition
                     {
-                        AttributeName = nameof(SagaData.SagaID),
+                        AttributeName = nameof(SagaDataWithOCC.SagaID),
                         AttributeType = "S",
                     },
                     new AttributeDefinition
                     {
-                        AttributeName = nameof(SagaData.CorrelationID),
+                        AttributeName = nameof(SagaDataWithOCC.CorrelationID),
                         AttributeType = "S",
                     }
                 },
@@ -38,12 +38,12 @@ namespace OCC
                 {
                     new KeySchemaElement
                     {
-                        AttributeName = nameof(SagaData.SagaID),
+                        AttributeName = nameof(SagaDataWithOCC.SagaID),
                         KeyType = "HASH",
                     },
                     new KeySchemaElement
                     {
-                        AttributeName = nameof(SagaData.CorrelationID),
+                        AttributeName = nameof(SagaDataWithOCC.CorrelationID),
                         KeyType = "RANGE",
                     },
                 },
@@ -169,13 +169,13 @@ namespace OCC
 
         static List<int> ExtractHandledIndexes(Dictionary<string, AttributeValue> sagaData)
         {
-            var handledIndexes = sagaData[nameof(SagaData.HandledIndexes)].L.Select(av => int.Parse(av.N)).ToList();
+            var handledIndexes = sagaData[nameof(SagaDataWithOCC.HandledIndexes)].L.Select(av => int.Parse(av.N)).ToList();
             return handledIndexes;
         }
         
         static int ExtractVersion(Dictionary<string, AttributeValue> sagaData)
         {
-            var version = sagaData[nameof(SagaData.ItemVersion)].N;
+            var version = sagaData[nameof(SagaDataWithOCC.ItemVersion)].N;
             return int.Parse(version);
         }
 
@@ -183,8 +183,8 @@ namespace OCC
         {
             return new Dictionary<string, AttributeValue>()
             {
-                [nameof(SagaData.SagaID)] = new AttributeValue { S = sagaDataStableId },
-                [nameof(SagaData.CorrelationID)] = new AttributeValue { S = sagaDataStableId },
+                [nameof(SagaDataWithOCC.SagaID)] = new AttributeValue { S = sagaDataStableId },
+                [nameof(SagaDataWithOCC.CorrelationID)] = new AttributeValue { S = sagaDataStableId },
             };
         }
 
@@ -213,11 +213,11 @@ namespace OCC
             Console.WriteLine($"Test document ID: {sagaDataStableId}");
 
             var item = CreateKey(sagaDataStableId);
-            item.Add(nameof(SagaData.ItemVersion), new AttributeValue()
+            item.Add(nameof(SagaDataWithOCC.ItemVersion), new AttributeValue()
             {
                 N = "0"
             });
-            item.Add(nameof(SagaData.HandledIndexes), new AttributeValue()
+            item.Add(nameof(SagaDataWithOCC.HandledIndexes), new AttributeValue()
             {
                 L = new List<AttributeValue>(),
                 IsLSet = true
@@ -268,8 +268,8 @@ namespace OCC
                     {
                         TableName = sagasTableName,
                         Key = CreateKey(sagaDataStableId),
-                        UpdateExpression = $"SET {nameof(SagaData.HandledIndexes)}[{currentIndexes.Count + 1}] = :hi, {nameof(SagaData.ItemVersion)} = :nv",
-                        ConditionExpression = $"{nameof(SagaData.ItemVersion)} = :cv",
+                        UpdateExpression = $"SET {nameof(SagaDataWithOCC.HandledIndexes)}[{currentIndexes.Count + 1}] = :hi, {nameof(SagaDataWithOCC.ItemVersion)} = :nv",
+                        ConditionExpression = $"{nameof(SagaDataWithOCC.ItemVersion)} = :cv",
                         ExpressionAttributeValues = new Dictionary<string, AttributeValue>()
                         {
                             {
@@ -318,7 +318,7 @@ namespace OCC
         }
     }
 
-    class SagaData
+    class SagaDataWithOCC
     {
         public string SagaID { get; set; }
         public string CorrelationID { get; set; }

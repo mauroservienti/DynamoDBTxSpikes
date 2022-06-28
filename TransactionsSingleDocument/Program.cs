@@ -13,7 +13,7 @@ namespace TransactionsSingleDocument
     {
         const int numberOfConcurrentUpdates = 50;
         const int maxRetryAttempts = 50;
-        const string sagasTableName = "Sagas";
+        const string sagasTableName = nameof(SagaDataWithTransactions);
 
         static async Task<bool> CreateTable(AmazonDynamoDBClient client, string tableName)
         {
@@ -24,12 +24,12 @@ namespace TransactionsSingleDocument
                 {
                     new AttributeDefinition
                     {
-                        AttributeName = "SagaID",
+                        AttributeName = nameof(SagaDataWithTransactions.SagaID),
                         AttributeType = "S",
                     },
                     new AttributeDefinition
                     {
-                        AttributeName = "CorrelationID",
+                        AttributeName = nameof(SagaDataWithTransactions.CorrelationID),
                         AttributeType = "S",
                     }
                 },
@@ -37,12 +37,12 @@ namespace TransactionsSingleDocument
                 {
                     new KeySchemaElement
                     {
-                        AttributeName = "SagaID",
+                        AttributeName = nameof(SagaDataWithTransactions.SagaID),
                         KeyType = "HASH",
                     },
                     new KeySchemaElement
                     {
-                        AttributeName = "CorrelationID",
+                        AttributeName = nameof(SagaDataWithTransactions.CorrelationID),
                         KeyType = "RANGE",
                     },
                 },
@@ -176,8 +176,8 @@ namespace TransactionsSingleDocument
         {
             return new Dictionary<string, AttributeValue>()
             {
-                ["SagaID"] = new AttributeValue { S = sagaDataStableId },
-                ["CorrelationID"] = new AttributeValue { S = sagaDataStableId },
+                [nameof(SagaDataWithTransactions.SagaID)] = new AttributeValue { S = sagaDataStableId },
+                [nameof(SagaDataWithTransactions.CorrelationID)] = new AttributeValue { S = sagaDataStableId },
             };
         }
 
@@ -269,7 +269,7 @@ namespace TransactionsSingleDocument
                                 {
                                     Key = CreateKey(sagaDataStableId),
                                     TableName = sagasTableName,
-                                    UpdateExpression = $"SET HandledIndexes[{currentIndexes.Count + 1}] = :hi",
+                                    UpdateExpression = $"SET {nameof(SagaDataWithTransactions.HandledIndexes)}[{currentIndexes.Count + 1}] = :hi",
                                     ExpressionAttributeValues = new Dictionary<string, AttributeValue>()
                                     {
                                         {
@@ -303,10 +303,10 @@ namespace TransactionsSingleDocument
         }
     }
 
-    class SampleSagaData
+    class SagaDataWithTransactions
     {
-        public string SagaId { get; set; }
-        public string CorrelationId { get; set; }
+        public string SagaID { get; set; }
+        public string CorrelationID { get; set; }
         public List<int> HandledIndexes { get; set; } = new List<int>();
     }
 }
