@@ -168,7 +168,7 @@ namespace TransactionsSingleDocument
 
         static List<int> ExtractHandledIndexes(Dictionary<string, AttributeValue> sagaData)
         {
-            var handledIndexes = sagaData[nameof(SampleSagaData.HandledIndexes)].NS.Select(stringValue => int.Parse(stringValue)).ToList();
+            var handledIndexes = sagaData[nameof(SagaDataWithTransactions.HandledIndexes)].L.Select(av => int.Parse(av.N)).ToList();
             return handledIndexes;
         }
 
@@ -203,9 +203,9 @@ namespace TransactionsSingleDocument
             Console.WriteLine($"Test document ID: {sagaDataStableId}");
 
             var item = CreateKey(sagaDataStableId);
-            item.Add("HandledIndexes", new AttributeValue()
+            item.Add(nameof(SagaDataWithTransactions.HandledIndexes), new AttributeValue()
             {
-                NS = new List<string>(),
+                L = new List<AttributeValue>(),
                 IsLSet = true
             });
             
