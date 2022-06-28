@@ -77,10 +77,9 @@ namespace TransactionsSingleDocument
             return status == TableStatus.ACTIVE;
         }
 
-        public static async Task<bool> TableExist(AmazonDynamoDBClient client, string tableName)
+        static async Task<bool> TableExist(AmazonDynamoDBClient client, string tableName)
         {
             var request = new ListTablesRequest();
-            //var request = new DescribeTableRequest(tableName);
             var response = await client.ListTablesAsync(request); //max 100 results
 
             return response?.HttpStatusCode == HttpStatusCode.OK && response.TableNames.Contains(tableName);
