@@ -137,7 +137,10 @@ namespace OCC
                 }
             }
 
-            var getSagaRequest = new GetItemRequest(sagasTableName, CreateKey(sagaDataStableId));
+            var getSagaRequest = new GetItemRequest(sagasTableName, CreateKey(sagaDataStableId))
+            {
+                ConsistentRead = true
+            };
             var getSagaResponse = await dynamoDbClient.GetItemAsync(getSagaRequest);
             var handledIndexes = ExtractHandledIndexes(getSagaResponse.Item);
             
