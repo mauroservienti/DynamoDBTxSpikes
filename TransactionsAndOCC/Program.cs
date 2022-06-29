@@ -7,6 +7,7 @@ using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Amazon.Runtime;
+using DynamoDbHelpers;
 
 namespace TransactionsAndOCC
 {
@@ -16,75 +17,7 @@ namespace TransactionsAndOCC
         const int maxRetryAttempts = 50;
         const string sagasTableName = nameof(SagaDataWithTransactionsAndOCC);
 
-        static async Task<bool> CreateTable(AmazonDynamoDBClient client, string tableName)
-        {
-            var response = await client.CreateTableAsync(new CreateTableRequest
-            {
-                TableName = tableName,
-                AttributeDefinitions = new List<AttributeDefinition>()
-                {
-                    new AttributeDefinition
-                    {
-                        AttributeName = nameof(SagaDataWithTransactionsAndOCC.SagaID),
-                        AttributeType = "S",
-                    },
-                    new AttributeDefinition
-                    {
-                        AttributeName = nameof(SagaDataWithTransactionsAndOCC.CorrelationID),
-                        AttributeType = "S",
-                    }
-                },
-                KeySchema = new List<KeySchemaElement>()
-                {
-                    new KeySchemaElement
-                    {
-                        AttributeName = nameof(SagaDataWithTransactionsAndOCC.SagaID),
-                        KeyType = "HASH",
-                    },
-                    new KeySchemaElement
-                    {
-                        AttributeName = nameof(SagaDataWithTransactionsAndOCC.CorrelationID),
-                        KeyType = "RANGE",
-                    },
-                },
-                ProvisionedThroughput = new ProvisionedThroughput
-                {
-                    //no idea what these values should be in production and it users should have control on it and how
-                    ReadCapacityUnits = 50,
-                    WriteCapacityUnits = 50,
-                },
-            });
-
-            // Wait until the table is ACTIVE and then report success.
-            Console.Write("Waiting for table to become active...");
-
-            var request = new DescribeTableRequest
-            {
-                TableName = response.TableDescription.TableName,
-            };
-
-            TableStatus status;
-            do
-            {
-                await Task.Delay(2000);
-
-                var describeTableResponse = await client.DescribeTableAsync(request);
-                status = describeTableResponse.Table.TableStatus;
-
-                Console.Write(".");
-            } while (status != "ACTIVE");
-
-            return status == TableStatus.ACTIVE;
-        }
-
-        static async Task<bool> TableExist(AmazonDynamoDBClient client, string tableName)
-        {
-            var request = new ListTablesRequest();
-            //var request = new DescribeTableRequest(tableName);
-            var response = await client.ListTablesAsync(request); //max 100 results
-
-            return response?.HttpStatusCode == HttpStatusCode.OK && response.TableNames.Contains(tableName);
-        }
+        
 
         static async Task Main(string[] args)
         {
@@ -94,10 +27,10 @@ namespace TransactionsAndOCC
             };
             var dynamoDbClient = new AmazonDynamoDBClient(new EnvironmentVariablesAWSCredentials(), clientConfig);
 
-            var tableExist = await TableExist(dynamoDbClient, sagasTableName);
+            var tableExist = await TableHelper.TableExist(dynamoDbClient, sagasTableName);
             if (tableExist == false)
             {
-                _ = await CreateTable(dynamoDbClient, sagasTableName);
+                _ = await TableHelper.CreateTable( dynamoDbClient, sagasTableName, nameof(SagaDataWithTransactionsAndOCC.SagaID), nameof(SagaDataWithTransactionsAndOCC.CorrelationID));
             }
 
             (bool Succeeded, int Index, string ErrorMessage)[] results = null;

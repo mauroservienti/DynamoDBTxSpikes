@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OCC", "OCC\OCC.csproj", "{C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransactionsAndOCC", "TransactionsAndOCC\TransactionsAndOCC.csproj", "{FD0B012D-A52B-4A4C-B67F-A6ADFB77548B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoDbHelpers", "DynamoDbHelpers\DynamoDbHelpers.csproj", "{65BB0793-0E0F-473A-9BD7-BB952898B9CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,5 +30,9 @@ Global
 		{FD0B012D-A52B-4A4C-B67F-A6ADFB77548B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD0B012D-A52B-4A4C-B67F-A6ADFB77548B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD0B012D-A52B-4A4C-B67F-A6ADFB77548B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65BB0793-0E0F-473A-9BD7-BB952898B9CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65BB0793-0E0F-473A-9BD7-BB952898B9CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65BB0793-0E0F-473A-9BD7-BB952898B9CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65BB0793-0E0F-473A-9BD7-BB952898B9CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

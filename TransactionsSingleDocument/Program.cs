@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
+using DynamoDbHelpers;
 
 namespace TransactionsSingleDocument
 {
@@ -15,76 +16,6 @@ namespace TransactionsSingleDocument
         const int maxRetryAttempts = 50;
         const string sagasTableName = nameof(SagaDataWithTransactions);
 
-        static async Task<bool> CreateTable(AmazonDynamoDBClient client, string tableName)
-        {
-            var response = await client.CreateTableAsync(new CreateTableRequest
-            {
-                TableName = tableName,
-                AttributeDefinitions = new List<AttributeDefinition>()
-                {
-                    new AttributeDefinition
-                    {
-                        AttributeName = nameof(SagaDataWithTransactions.SagaID),
-                        AttributeType = "S",
-                    },
-                    new AttributeDefinition
-                    {
-                        AttributeName = nameof(SagaDataWithTransactions.CorrelationID),
-                        AttributeType = "S",
-                    }
-                },
-                KeySchema = new List<KeySchemaElement>()
-                {
-                    new KeySchemaElement
-                    {
-                        AttributeName = nameof(SagaDataWithTransactions.SagaID),
-                        KeyType = "HASH",
-                    },
-                    new KeySchemaElement
-                    {
-                        AttributeName = nameof(SagaDataWithTransactions.CorrelationID),
-                        KeyType = "RANGE",
-                    },
-                },
-                ProvisionedThroughput = new ProvisionedThroughput
-                {
-                    //no idea what these values should be in production and it users should have control on it and how
-                    ReadCapacityUnits = 50,
-                    WriteCapacityUnits = 50,
-                },
-            });
-
-            // Wait until the table is ACTIVE and then report success.
-            Console.Write("Waiting for table to become active...");
-
-            var request = new DescribeTableRequest
-            {
-                TableName = response.TableDescription.TableName,
-            };
-
-            TableStatus status;
-            do
-            {
-                await Task.Delay(2000);
-
-                var describeTableResponse = await client.DescribeTableAsync(request);
-                status = describeTableResponse.Table.TableStatus;
-
-                Console.Write(".");
-            }
-            while (status != "ACTIVE");
-
-            return status == TableStatus.ACTIVE;
-        }
-
-        static async Task<bool> TableExist(AmazonDynamoDBClient client, string tableName)
-        {
-            var request = new ListTablesRequest();
-            var response = await client.ListTablesAsync(request); //max 100 results
-
-            return response?.HttpStatusCode == HttpStatusCode.OK && response.TableNames.Contains(tableName);
-        }
-
         static async Task Main(string[] args)
         {
             var clientConfig = new AmazonDynamoDBConfig()
@@ -93,10 +24,10 @@ namespace TransactionsSingleDocument
             };
             var dynamoDbClient = new AmazonDynamoDBClient(clientConfig);
 
-            var tableExist = await TableExist(dynamoDbClient, sagasTableName);
+            var tableExist = await TableHelper.TableExist(dynamoDbClient, sagasTableName);
             if (tableExist == false)
             {
-                _ = await CreateTable( dynamoDbClient, sagasTableName);
+                _ = await TableHelper.CreateTable( dynamoDbClient, sagasTableName, nameof(SagaDataWithTransactions.SagaID), nameof(SagaDataWithTransactions.CorrelationID));
             }
 
             (bool Succeeded, int Index, string ErrorMessage)[] results = null;
