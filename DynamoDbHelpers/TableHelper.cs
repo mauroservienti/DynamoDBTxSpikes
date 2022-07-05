@@ -37,12 +37,7 @@ public static class TableHelper
                     KeyType = "RANGE",
                 },
             },
-            ProvisionedThroughput = new ProvisionedThroughput
-            {
-                //no idea what these values should be in production and it users should have control on it and how
-                ReadCapacityUnits = 50,
-                WriteCapacityUnits = 50,
-            },
+            BillingMode = BillingMode.PAY_PER_REQUEST,
         });
 
         // Wait until the table is ACTIVE and then report success.

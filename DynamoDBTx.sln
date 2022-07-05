@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransactionsAndOCC", "Trans
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoDbHelpers", "DynamoDbHelpers\DynamoDbHelpers.csproj", "{65BB0793-0E0F-473A-9BD7-BB952898B9CE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BatchGetVsQuuery", "BatchGetVsQuuery\BatchGetVsQuuery.csproj", "{EF13359F-9B4C-4BF2-A4C5-DDF1E6ACC33B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,5 +36,9 @@ Global
 		{65BB0793-0E0F-473A-9BD7-BB952898B9CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65BB0793-0E0F-473A-9BD7-BB952898B9CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65BB0793-0E0F-473A-9BD7-BB952898B9CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF13359F-9B4C-4BF2-A4C5-DDF1E6ACC33B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF13359F-9B4C-4BF2-A4C5-DDF1E6ACC33B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF13359F-9B4C-4BF2-A4C5-DDF1E6ACC33B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF13359F-9B4C-4BF2-A4C5-DDF1E6ACC33B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
