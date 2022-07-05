@@ -28,11 +28,11 @@ public static class Program
         var dynamoDbClient = new AmazonDynamoDBClient(new EnvironmentVariablesAWSCredentials(), clientConfig);
 
         var tableName = "BatchGetVsQueryTests";
-        // var tableExist = await TableHelper.TableExist(dynamoDbClient, tableName);
-        // if (tableExist == false)
-        // {
-        //     _ = await TableHelper.CreateTable(dynamoDbClient, tableName, "PK", "SK");
-        // }
+        var tableExist = await TableHelper.TableExist(dynamoDbClient, tableName);
+        if (tableExist == false)
+        {
+            _ = await TableHelper.CreateTable(dynamoDbClient, tableName, "PK", "SK");
+        }
 
         var pk = "some-partition-id";
         var items = Enumerable.Range(0, 10);
